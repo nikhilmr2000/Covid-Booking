@@ -16,6 +16,7 @@ import com.covid.chart.covidChart.Entity.Patient;
 import com.covid.chart.covidChart.Service.CovidService;
 
 @RestController
+@CrossOrigin(origins="http://localhost:4200")
 public class CovidController {
 	 
 	@Autowired
