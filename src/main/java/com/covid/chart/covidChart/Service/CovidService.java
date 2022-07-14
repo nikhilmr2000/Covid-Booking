@@ -11,6 +11,7 @@ import com.covid.chart.covidChart.Entity.Details;
 import com.covid.chart.covidChart.Entity.Hospital;
 import com.covid.chart.covidChart.Entity.Patient;
 import com.covid.chart.covidChart.Entity.TotalCount;
+import com.covid.chart.covidChart.Repository.CountRepo;
 import com.covid.chart.covidChart.Repository.HospitalRepo;
 import com.covid.chart.covidChart.Repository.PatientRepo;
 
@@ -24,20 +25,23 @@ public class CovidService {
 	private PatientRepo patientRepo;
 	
 	@Autowired
-	private TotalCount count; 
+	private CountRepo countRepo; 
 	
 	@Autowired
 	private CompleteReceipt allDetails;
 	
+	private int number; 
+	
 	//Save New Hospital
 	
 	public Hospital saveHospital(Hospital hospital) {
+		TotalCount count=new TotalCount();
 		if(hospital==null) {
 			return new Hospital();
 		}
 		else {
-			int number =count.getCount() + hospital.getVaccineNumber();
-			count.setCount(number);
+			count.setCount(hospital.getVaccineNumber());
+			countRepo.save(count);
 			Hospital newHospital=hospitalRepo.save(hospital);
 			return newHospital;
 		}
@@ -109,9 +113,16 @@ public class CovidService {
 		return total;
 	}
 	
+	
+	
 	//Total Vaccines
 	public int allVaccinesCount() {
-		return count.getCount();
+		int number=0;
+		List<TotalCount> count=countRepo.findAll();
+		for(TotalCount total:count) {
+			number+=total.getCount();
+		}
+		return number;
 	}
 	
 	//Particular Hospital Vaccines Available
